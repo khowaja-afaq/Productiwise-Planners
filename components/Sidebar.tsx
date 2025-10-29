@@ -33,12 +33,12 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView }) => {
     <aside className="w-64 bg-surface flex-shrink-0 p-6 flex flex-col justify-between border-r border-border">
       <div>
         <div className="flex items-center mb-10">
-            <svg className="w-10 h-10 text-primary" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M256 50.7L64 144v224l192 93.3 192-93.3V144L256 50.7z"/>
-                <path d="M64 144l192 93.3 192-93.3"/>
-                <path d="M256 50.7v186.6"/>
-                <path d="M400 97.3l-144 70"/>
-             </svg>
+            <svg className="w-10 h-10 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 7.5L12 4L19 7.5V16.5L12 20L5 16.5V7.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 11L19 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 11V20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 11L5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           <span className="text-2xl font-bold ml-2 text-text-primary">Productiwise</span>
         </div>
         <nav className="space-y-2">
