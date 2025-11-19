@@ -17,9 +17,16 @@ const priorityStyles = {
 const Dashboard: React.FC<DashboardProps> = ({ tasks, habits }) => {
   const upcomingTasks = tasks.filter(t => !t.completed).slice(0, 3);
   const todaysHabits = habits;
-  const overallProgress = Math.round(
-    (tasks.filter(t => t.completed).length / tasks.length) * 100
-  ) || 0;
+  const completedTasksCount = tasks.filter(t => t.completed).length;
+  const totalTasksCount = tasks.length;
+  const overallProgress = totalTasksCount === 0 ? 0 : Math.round(
+    (completedTasksCount / totalTasksCount) * 100
+  );
+
+  // Circular Progress Calculation
+  const radius = 50;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (overallProgress / 100) * circumference;
 
   return (
     <div className="space-y-8">
@@ -29,11 +36,43 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, habits }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-1">
-          <h2 className="text-lg font-semibold mb-2">Tasks Completed</h2>
-          <p className="text-5xl font-bold text-primary">{overallProgress}%</p>
-          <p className="text-text-secondary mt-2">{tasks.filter(t => t.completed).length} of {tasks.length} tasks done.</p>
+        <Card className="lg:col-span-1 flex flex-col justify-between">
+          <h2 className="text-lg font-semibold mb-4">Tasks Completed</h2>
+          <div className="flex flex-col items-center justify-center mb-2 flex-grow">
+            <div className="relative w-40 h-40">
+               {/* Background Circle */}
+               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+                  <circle
+                      cx="60"
+                      cy="60"
+                      r={radius}
+                      fill="none"
+                      stroke="#E9ECEF" // Light gray for empty part
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                  />
+                  {/* Progress Circle */}
+                  <circle
+                      cx="60"
+                      cy="60"
+                      r={radius}
+                      fill="none"
+                      stroke="#2d555d" // Primary color
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                      strokeDasharray={circumference}
+                      strokeDashoffset={strokeDashoffset}
+                      className="transition-all duration-1000 ease-out"
+                  />
+               </svg>
+               <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-4xl font-bold text-primary">{overallProgress}%</span>
+               </div>
+            </div>
+            <p className="text-text-secondary mt-4 font-medium">{completedTasksCount} of {totalTasksCount} tasks done.</p>
+          </div>
         </Card>
+        
         <Card className="lg:col-span-2">
             <h2 className="text-lg font-semibold mb-4">Upcoming Tasks</h2>
             <ul className="space-y-3">
@@ -56,15 +95,17 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, habits }) => {
         <h2 className="text-lg font-semibold mb-4">Today's Habits</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {todaysHabits.map(habit => (
-            <div key={habit.id} className="bg-background p-4 rounded-lg">
-              <p className="font-medium mb-2">{habit.title}</p>
-              <div className="w-full bg-border rounded-full h-2.5">
-                <div 
-                  className="bg-secondary h-2.5 rounded-full" 
-                  style={{ width: `${(habit.progress / habit.goal) * 100}%` }}
-                ></div>
+            <div key={habit.id} className="bg-background p-5 rounded-lg flex flex-col justify-between h-full">
+              <p className="font-medium mb-4">{habit.title}</p>
+              <div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                    <div 
+                      className="bg-secondary h-2.5 rounded-full transition-all duration-500 ease-out" 
+                      style={{ width: `${Math.min((habit.progress / habit.goal) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-sm text-right text-text-secondary">{habit.progress} / {habit.goal}</p>
               </div>
-              <p className="text-sm text-right text-text-secondary mt-1">{habit.progress} / {habit.goal}</p>
             </div>
           ))}
         </div>

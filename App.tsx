@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Task, Habit, Priority, CommunityMember, View } from './types';
+import { Task, Habit, Priority, CommunityMember, View, Repetition } from './types';
 import Sidebar from './components/Sidebar';
 import LoginScreen from './components/LoginScreen';
 import Dashboard from './components/Dashboard';
@@ -20,9 +20,9 @@ const App: React.FC = () => {
   ]);
 
   const [habits, setHabits] = useState<Habit[]>([
-    { id: '1', title: 'Read 20 pages', goal: 1, progress: 1 },
-    { id: '2', title: 'Drink 8 glasses of water', goal: 8, progress: 4 },
-    { id: '3', title: 'Meditate for 10 minutes', goal: 1, progress: 0 },
+    { id: '1', title: 'Read 20 pages', goal: 1, progress: 1, repetition: Repetition.Daily },
+    { id: '2', title: 'Drink 8 glasses of water', goal: 8, progress: 4, repetition: Repetition.Daily },
+    { id: '3', title: 'Meditate for 10 minutes', goal: 1, progress: 0, repetition: Repetition.Daily },
   ]);
 
   const [communityMembers] = useState<CommunityMember[]>([

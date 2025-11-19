@@ -6,20 +6,29 @@ export enum Priority {
   High = 'High',
 }
 
+export enum Repetition {
+  Daily = 'daily',
+  Weekly = 'weekly',
+  Monthly = 'monthly',
+}
+
 export type View = 'dashboard' | 'tasks' | 'habits' | 'community' | 'calendar';
 
 export interface Task {
   id: string;
   title: string;
+  description?: string;
   priority: Priority;
   deadline: string;
   completed: boolean;
+  reminder?: string;
 }
 
 export interface Habit {
   id: string;
   title: string;
-  goal: number; // e.g., times per day
+  goal: number; // e.g., 5 times a week
+  repetition: Repetition;
   progress: number;
 }
 
@@ -29,6 +38,13 @@ export interface CommunityMember {
   avatar: string;
   goal: string;
   progress: number;
+  isCurrentUser?: boolean;
+}
+
+export interface CommunityGroup {
+  id: string;
+  name: string;
+  members: CommunityMember[];
 }
 
 export interface ChatMessage {

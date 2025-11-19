@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Chat } from '@google/genai';
 import { ChatMessage } from '../types';
 import { startChat, sendMessageToGemini } from '../services/geminiService';
+import Logo from './Logo';
 
 const ProductiwiseChat: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -62,24 +63,14 @@ const ProductiwiseChat: React.FC = () => {
             >
                 {isOpen ? 
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> :
-                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5 7.5L12 4L19 7.5V16.5L12 20L5 16.5V7.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M12 11L19 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M12 11V20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M12 11L5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <Logo className="w-8 h-8" variant="monochrome" />
                 }
             </button>
 
             {isOpen && (
                 <div className="fixed bottom-24 right-6 w-full max-w-sm h-[60vh] bg-background rounded-2xl shadow-2xl flex flex-col z-40 border border-border animate-fade-in-up">
                     <div className="p-4 border-b border-border flex items-center">
-                        <svg className="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 7.5L12 4L19 7.5V16.5L12 20L5 16.5V7.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            <path d="M12 11L19 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            <path d="M12 11V20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            <path d="M12 11L5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
+                        <Logo className="w-8 h-8" />
                         <h3 className="text-lg font-bold ml-2">Productiwise AI</h3>
                     </div>
                     <div className="flex-1 p-4 space-y-4 overflow-y-auto">
