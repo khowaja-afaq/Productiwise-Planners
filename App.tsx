@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Task, Habit, Priority, CommunityMember, View, Repetition } from './types';
+import { Task, Habit, Priority, CommunityGroup, View, Repetition } from './types';
 import Sidebar from './components/Sidebar';
 import LoginScreen from './components/LoginScreen';
 import Dashboard from './components/Dashboard';
@@ -25,15 +25,43 @@ const App: React.FC = () => {
     { id: '3', title: 'Meditate for 10 minutes', goal: 1, progress: 0, repetition: Repetition.Daily },
   ]);
 
-  const [communityMembers] = useState<CommunityMember[]>([
-      { id: '1', name: 'Alice', avatar: 'https://picsum.photos/id/237/100/100', goal: 'Learn React Native', progress: 75 },
-      { id: '2', name: 'Bob', avatar: 'https://picsum.photos/id/238/100/100', goal: 'Run a marathon', progress: 40 },
-      { id: '3', name: 'Charlie', avatar: 'https://picsum.photos/id/239/100/100', goal: 'Write a novel', progress: 60 },
+  const [communityGroups, setCommunityGroups] = useState<CommunityGroup[]>([
+      {
+          id: '1',
+          name: 'Web Development Squad',
+          members: [
+              { id: '1', name: 'Alice', avatar: 'https://picsum.photos/id/237/100/100', goal: 'Learn React Native', progress: 75 },
+              { id: '2', name: 'Bob', avatar: 'https://picsum.photos/id/238/100/100', goal: 'Master TypeScript', progress: 40 },
+              { id: 'u1', name: 'You', avatar: 'https://ui-avatars.com/api/?name=You&background=2d555d&color=fff', goal: 'Build a Portfolio', progress: 50, isCurrentUser: true },
+          ]
+      },
+      {
+          id: '2',
+          name: 'Book Club',
+          members: [
+              { id: '3', name: 'Charlie', avatar: 'https://picsum.photos/id/239/100/100', goal: 'Read 50 Books', progress: 60 },
+              { id: 'u2', name: 'You', avatar: 'https://ui-avatars.com/api/?name=You&background=2d555d&color=fff', goal: 'Read 20 Books', progress: 25, isCurrentUser: true },
+          ]
+      }
   ]);
 
   const handleLogin = useCallback(() => {
     setIsLoggedIn(true);
   }, []);
+
+  const handleUpdateProgress = (groupId: string, memberId: string, newProgress: number) => {
+    setCommunityGroups(prev => prev.map(group => {
+        if (group.id === groupId) {
+            return {
+                ...group,
+                members: group.members.map(member => 
+                    member.id === memberId ? { ...member, progress: newProgress } : member
+                )
+            };
+        }
+        return group;
+    }));
+  };
 
   const renderContent = () => {
     switch (currentView) {
@@ -44,7 +72,7 @@ const App: React.FC = () => {
       case 'habits':
         return <HabitsView habits={habits} setHabits={setHabits} />;
       case 'community':
-        return <CommunityView members={communityMembers} />;
+        return <CommunityView groups={communityGroups} onUpdateProgress={handleUpdateProgress} />;
       case 'calendar':
         return <CalendarView tasks={tasks} />;
       default:
