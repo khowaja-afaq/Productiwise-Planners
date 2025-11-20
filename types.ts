@@ -12,7 +12,14 @@ export enum Repetition {
   Monthly = 'monthly',
 }
 
-export type View = 'dashboard' | 'tasks' | 'habits' | 'community' | 'calendar';
+export type View = 'dashboard' | 'tasks' | 'habits' | 'community' | 'calendar' | 'profile';
+
+export interface UserProfile {
+  name: string;
+  email: string;
+  avatar: string;
+  bio: string;
+}
 
 export interface Task {
   id: string;
@@ -30,6 +37,7 @@ export interface Habit {
   goal: number; // e.g., 5 times a week
   repetition: Repetition;
   progress: number;
+  streak?: number;
 }
 
 export interface CommunityMember {

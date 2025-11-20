@@ -1,11 +1,12 @@
 
 import React from 'react';
-import { Task, Habit, Priority } from '../types';
+import { Task, Habit, Priority, UserProfile } from '../types';
 import Card from './ui/Card';
 
 interface DashboardProps {
   tasks: Task[];
   habits: Habit[];
+  userProfile: UserProfile;
 }
 
 const priorityStyles = {
@@ -14,7 +15,7 @@ const priorityStyles = {
     [Priority.Low]: 'bg-blue-500',
 };
 
-const Dashboard: React.FC<DashboardProps> = ({ tasks, habits }) => {
+const Dashboard: React.FC<DashboardProps> = ({ tasks, habits, userProfile }) => {
   const upcomingTasks = tasks.filter(t => !t.completed).slice(0, 3);
   const todaysHabits = habits;
   const completedTasksCount = tasks.filter(t => t.completed).length;
@@ -31,7 +32,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, habits }) => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Welcome back!</h1>
+        <h1 className="text-3xl font-bold">Welcome back, {userProfile.name.split(' ')[0]}!</h1>
         <p className="text-text-secondary">Here's your productivity snapshot for today.</p>
       </div>
 

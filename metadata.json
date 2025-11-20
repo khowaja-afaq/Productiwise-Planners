@@ -1,5 +1,7 @@
 {
   "name": "Productiwise: AI Productivity Planner",
   "description": "A comprehensive productivity application that combines task management, habit tracking, and community goals, all supercharged by an integrated AI assistant. Plan your day, track your progress, and get intelligent help every step of the way.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [
+    "microphone"
+  ]
 }

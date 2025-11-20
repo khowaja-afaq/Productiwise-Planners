@@ -14,6 +14,16 @@ const CommunityView: React.FC<CommunityViewProps> = ({ groups, onUpdateProgress 
         alert(`Invite link for "${groupName}" copied to clipboard! (Simulated)`);
     };
 
+    const extractGoalNumber = (goal: string): number | null => {
+        const match = goal.match(/\d+/);
+        return match ? parseInt(match[0], 10) : null;
+    };
+
+    const calculateCurrentValue = (progress: number, goalTarget: number | null) => {
+        if (!goalTarget) return progress; // Default to percentage if no number found
+        return Math.round((progress / 100) * goalTarget);
+    };
+
   return (
     <div className="space-y-8">
       <div>
@@ -34,32 +44,91 @@ const CommunityView: React.FC<CommunityViewProps> = ({ groups, onUpdateProgress 
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {group.members.map(member => (
-                  <Card key={member.id} className={`text-center flex flex-col items-center transition-all duration-300 ${member.isCurrentUser ? 'ring-2 ring-secondary ring-offset-2' : ''}`}>
-                    <div className="relative">
-                        <img src={member.avatar} alt={member.name} className="w-24 h-24 rounded-full mb-4 border-4 border-primary object-cover" />
-                        {member.isCurrentUser && <span className="absolute bottom-4 right-0 bg-secondary text-white text-xs px-2 py-1 rounded-full">You</span>}
-                    </div>
-                    <h3 className="text-xl font-semibold">{member.name}</h3>
-                    <p className="text-text-secondary mt-1 mb-4">{member.goal}</p>
+                {group.members.map(member => {
+                    const goalTarget = extractGoalNumber(member.goal);
+                    const currentValue = calculateCurrentValue(member.progress, goalTarget);
                     
-                    <div className="w-full">
-                        <div className="flex justify-between text-xs text-text-secondary mb-1">
-                            <span>Progress</span>
-                            <span>{member.progress}%</span>
-                        </div>
-                        {member.isCurrentUser ? (
-                            <div className="flex items-center">
-                                <input 
-                                    type="range" 
-                                    min="0" 
-                                    max="100" 
-                                    value={member.progress} 
-                                    onChange={(e) => onUpdateProgress(group.id, member.id, parseInt(e.target.value))}
-                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-secondary"
+                    // Special rendering for the current user ("You")
+                    if (member.isCurrentUser) {
+                      const radius = 35;
+                      const circumference = 2 * Math.PI * radius;
+                      const strokeDashoffset = circumference - (member.progress / 100) * circumference;
+
+                      return (
+                        <Card key={member.id} className="text-center flex flex-col items-center transition-all duration-300 ring-2 ring-secondary ring-offset-2 border-secondary relative">
+                          {/* Circular Progress Indicator for "You" */}
+                          <div className="relative w-24 h-24 mb-4">
+                            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 80 80">
+                                {/* Background Circle */}
+                                <circle cx="40" cy="40" r={radius} stroke="#E9ECEF" strokeWidth="6" fill="none" />
+                                {/* Progress Circle */}
+                                <circle 
+                                  cx="40" 
+                                  cy="40" 
+                                  r={radius} 
+                                  stroke="#2d555d" 
+                                  strokeWidth="6" 
+                                  fill="none" 
+                                  strokeDasharray={circumference} 
+                                  strokeDashoffset={strokeDashoffset} 
+                                  strokeLinecap="round" 
                                 />
+                            </svg>
+                            <span className="absolute bottom-0 right-0 bg-secondary text-white text-xs font-bold px-2 py-1 rounded-full transform translate-x-1 translate-y-1 shadow-sm">
+                              You
+                            </span>
+                          </div>
+
+                          <h3 className="text-xl font-semibold">{member.name}</h3>
+                          <p className="text-text-secondary mt-1 mb-4">{member.goal}</p>
+
+                          <div className="w-full mt-auto space-y-2">
+                              <div className="flex justify-between items-center text-xs text-text-secondary mb-1">
+                                  <span>Progress</span>
+                                  <span className="font-semibold text-text-primary">{member.progress}%</span>
+                              </div>
+                              
+                              <div className="relative w-full h-3 bg-gray-200 rounded-full">
+                                  <div 
+                                      className="absolute top-0 left-0 h-full bg-secondary rounded-full" 
+                                      style={{ width: `${member.progress}%` }} 
+                                  />
+                                  <input 
+                                      type="range" 
+                                      min="0" 
+                                      max="100" 
+                                      value={member.progress} 
+                                      onChange={(e) => onUpdateProgress(group.id, member.id, parseInt(e.target.value))}
+                                      className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                      title="Drag to update progress"
+                                  />
+                              </div>
+                              
+                              {/* X out of Y Text */}
+                              {goalTarget && (
+                                  <div className="text-right text-blue-400 text-sm font-medium">
+                                      {currentValue} out of {goalTarget}
+                                  </div>
+                              )}
+                          </div>
+                        </Card>
+                      );
+                    }
+
+                    // Standard Card for other members
+                    return (
+                      <Card key={member.id} className="text-center flex flex-col items-center transition-all duration-300">
+                        <div className="relative">
+                            <img src={member.avatar} alt={member.name} className="w-24 h-24 rounded-full mb-4 border-4 border-primary object-cover" />
+                        </div>
+                        <h3 className="text-xl font-semibold">{member.name}</h3>
+                        <p className="text-text-secondary mt-1 mb-4">{member.goal}</p>
+                        
+                        <div className="w-full mt-auto">
+                            <div className="flex justify-between text-xs text-text-secondary mb-1">
+                                <span>Progress</span>
+                                <span>{member.progress}%</span>
                             </div>
-                        ) : (
                             <div className="w-full bg-background rounded-full h-4 overflow-hidden">
                               <div
                                 className="bg-secondary h-full rounded-full text-xs text-white flex items-center justify-center transition-all duration-500"
@@ -67,10 +136,10 @@ const CommunityView: React.FC<CommunityViewProps> = ({ groups, onUpdateProgress 
                               >
                               </div>
                             </div>
-                        )}
-                    </div>
-                  </Card>
-                ))}
+                        </div>
+                      </Card>
+                    );
+                })}
               </div>
           </div>
       ))}

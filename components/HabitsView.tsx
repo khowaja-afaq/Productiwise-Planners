@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Habit, Repetition } from '../types';
 import Card from './ui/Card';
@@ -24,7 +23,15 @@ const HabitItem: React.FC<{ habit: Habit; onIncrement: (id: string) => void; onD
     <Card className={`transition-all duration-300 ${isComplete ? 'border-l-4 border-secondary' : ''}`}>
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="text-lg font-semibold">{habit.title}</h3>
+          <h3 className="text-lg font-semibold flex items-center">
+            {habit.title}
+            {habit.streak && habit.streak > 0 && (
+                <span className="ml-2 inline-flex items-center text-orange-500 text-sm bg-orange-50 px-2 py-0.5 rounded-full" title={`${habit.streak} day streak`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="mr-1"><path d="M8.566 17.678c-2.524-2.435-3.084-5.325-1.68-8.062.414-.808 1.002-1.57 1.855-2.166-1.35 2.342.163 4.612 1.55 5.344 3.058 1.61 5.63-3.667 2.916-8.41 2.93 2.136 5.32 5.495 3.904 9.408-1.105 3.053-3.74 4.986-6.254 4.96-1.006-.01-1.82-.39-2.29-.835v-.24z"/></svg>
+                    <span className="font-bold">{habit.streak}</span>
+                </span>
+            )}
+          </h3>
           <p className="text-text-secondary">{habit.progress} / {habit.goal} completed this {repetitionTextMap[habit.repetition]}</p>
         </div>
         <div className="flex items-center space-x-2">
@@ -48,7 +55,7 @@ const HabitItem: React.FC<{ habit: Habit; onIncrement: (id: string) => void; onD
   );
 };
 
-const HabitForm: React.FC<{ onSave: (habit: Omit<Habit, 'id' | 'progress'>) => void; onCancel: () => void; initialHabit?: Habit | null; }> = ({ onSave, onCancel, initialHabit }) => {
+const HabitForm: React.FC<{ onSave: (habit: Omit<Habit, 'id' | 'progress' | 'streak'>) => void; onCancel: () => void; initialHabit?: Habit | null; }> = ({ onSave, onCancel, initialHabit }) => {
     const [title, setTitle] = useState(initialHabit?.title || '');
     const [goal, setGoal] = useState(initialHabit?.goal || 1);
     const [repetition, setRepetition] = useState<Repetition>(initialHabit?.repetition || Repetition.Daily);
@@ -123,17 +130,18 @@ const HabitsView: React.FC<HabitsViewProps> = ({ habits, setHabits }) => {
     setEditingHabit(null);
   };
 
-  const handleAddHabit = (habitData: Omit<Habit, 'id' | 'progress'>) => {
+  const handleAddHabit = (habitData: Omit<Habit, 'id' | 'progress' | 'streak'>) => {
     const newHabit: Habit = {
         ...habitData,
         id: Date.now().toString(),
         progress: 0,
+        streak: 0,
     };
     setHabits(prev => [...prev, newHabit]);
     closeModal();
   };
 
-  const handleEditHabit = (habitData: Omit<Habit, 'id' | 'progress'>) => {
+  const handleEditHabit = (habitData: Omit<Habit, 'id' | 'progress' | 'streak'>) => {
     if (!editingHabit) return;
     setHabits(prev => prev.map(h => h.id === editingHabit.id ? { ...h, ...habitData } : h));
     closeModal();

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View } from '../types';
 import Logo from './Logo';
@@ -6,6 +5,7 @@ import Logo from './Logo';
 interface SidebarProps {
   currentView: View;
   setCurrentView: (view: View) => void;
+  onLogout: () => void;
 }
 
 // FIX: Changed icon type to React.ReactElement<any> to allow className to be passed via cloneElement.
@@ -21,7 +21,7 @@ const NavItem: React.FC<{ icon: React.ReactElement<any>; label: string; isActive
     </button>
   );
 
-const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView }) => {
+const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, onLogout }) => {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> },
     { id: 'tasks', label: 'Tasks', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> },
@@ -48,9 +48,27 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView }) => {
           ))}
         </nav>
       </div>
-      <div className="text-center text-xs text-text-secondary">
-        <p>&copy; {new Date().getFullYear()} Productiwise Inc.</p>
-        <p>All rights reserved.</p>
+      
+      <div>
+        <div className="h-px bg-border my-4 mx-4"></div>
+        <nav className="space-y-2 mb-6">
+            <NavItem 
+                icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>}
+                label="My Profile"
+                isActive={currentView === 'profile'}
+                onClick={() => setCurrentView('profile')} 
+            />
+            <NavItem 
+                icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>}
+                label="Logout"
+                isActive={false}
+                onClick={onLogout}
+            />
+        </nav>
+        <div className="text-center text-xs text-text-secondary">
+            <p>&copy; {new Date().getFullYear()} Productiwise Inc.</p>
+            <p>All rights reserved.</p>
+        </div>
       </div>
     </aside>
   );
