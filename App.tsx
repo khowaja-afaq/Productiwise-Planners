@@ -9,10 +9,12 @@ import CommunityView from './components/CommunityView';
 import CalendarView from './components/CalendarView';
 import ProfileView from './components/ProfileView';
 import ProductiwiseChat from './components/ProductiwiseChat';
+import Logo from './components/Logo';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentView, setCurrentView] = useState<View>('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   const [userProfile, setUserProfile] = useState<UserProfile>({
     name: 'Alex Johnson',
@@ -105,10 +107,42 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-background text-text-primary">
-      <Sidebar currentView={currentView} setCurrentView={setCurrentView} onLogout={handleLogout} />
-      <main className="flex-1 p-6 sm:p-8 lg:p-10 overflow-y-auto">
-        {renderContent()}
-      </main>
+      <Sidebar 
+        currentView={currentView} 
+        setCurrentView={setCurrentView} 
+        onLogout={handleLogout} 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" 
+          onClick={() => setIsSidebarOpen(false)}
+        ></div>
+      )}
+
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Mobile Header */}
+        <header className="md:hidden bg-surface border-b border-border p-4 flex items-center justify-between flex-shrink-0">
+           <div className="flex items-center">
+             <Logo type="icon" className="w-8 h-8 mr-2"/>
+             <span className="font-bold text-lg text-primary">Productiwise</span>
+           </div>
+           <button 
+             onClick={() => setIsSidebarOpen(true)}
+             className="text-text-primary p-1 rounded-md hover:bg-background"
+           >
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+           </button>
+        </header>
+
+        <main className="flex-1 p-6 sm:p-8 lg:p-10 overflow-y-auto">
+          {renderContent()}
+        </main>
+      </div>
+
       <ProductiwiseChat />
     </div>
   );
